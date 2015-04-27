@@ -40,17 +40,9 @@ Task * Scheduler::choose_next(){//tenho que dizer qual subclasse quer acessar o 
 
 void Scheduler::dispatcher(void*d){
 
-while(Task::_count > 2){
-//cout << "ERRO6" << endl;
-	Task * t = __dispatcher->choose_next(); //c	
-//cout << "ERRO8" << endl;	
-//cout << "Tid da tarefa em execução>: "<< this->_tid << endl;
-//cout << "Tid da tarefa a entrar>: "<< t << endl;	
-//cout << "Tid da tarefa this>: "<< __dispatcher << endl;		 
-	__dispatcher->pass_to(t);
-//	cout << "ERRO9" << endl;
+	while(Task::_count > 2){
+		Task * t = __dispatcher->choose_next(); //c	
+		__dispatcher->pass_to(t);
+	}	
 }
-	
-}
-
 }
