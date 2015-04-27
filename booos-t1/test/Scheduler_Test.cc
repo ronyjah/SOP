@@ -151,7 +151,7 @@ namespace Scheduler_Test_Functions {
 		while(Task::count() > 2) {
 			
 			log.push("Main yielding...\n");
-	//		cout << "----=====EXECUTANDO=====----" << endl;
+			cout << "----=====EXECUTANDO=====----" << endl;
 			Task::self()->yield();
 		
 		}
