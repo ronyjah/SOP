@@ -65,51 +65,34 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 
 
 void Task::pass_to(Task * t, State s){
-//cout << "Valor de  s: " << s << endl;
+
 	//sai a main e scheduler vai ser processado. mas nao muda o estado
 	if(t->_state == Task::SCHEDULER){
-//		cout << "ERRO.  s:" << s << endl;
-		Task::__running = t;
 		this->_state = s;
 		if(this->_state == Task::READY){
-//			cout << "ERRO1.  s:" << s << endl;	
 			Task::__ready.insert(this);
-			swapcontext(&this->_context,&t->_context);
-			return;
+			
 		}else if(this->_state == Task::FINISHING){
-	//		cout << "ERRO2.  s:" << s << endl;
-			swapcontext(&this->_context,&t->_context);
-			return;
-		}
-		
+			cout << "State da tarefa main é finish" << endl;
+		}	
 		//scheduler deixara de ser processado. scheduler nao é incluso na lista
 	}else if(this->_state == Task::SCHEDULER){
-//		cout << "ERRO4.  s:" << s << endl;
-		Task::__running = t;
 		t->_state = RUNNING;
-		swapcontext(&this->_context,&t->_context);
-		return;
 	}else{
-//		 cout << "ERRO5.  s:" << s << endl;
-		//nao se trata de scheduler
 		this->_state = s;
 		if(this->_state == Task::READY){
-			Task::__ready.insert(this);
-			Task::__running = t; 
-			t->_state = RUNNING;
-			swapcontext(&this->_context,&t->_context);
-			return;
-		}else if(this->_state == Task::FINISHING){
-			Task::__running = t; 
-			t->_state = RUNNING;
-			swapcontext(&this->_context,&t->_context);
-			return;
-//		cout << "finisnh de  s: " << s << endl;
-		}else{
+			Task::__ready.insert(this); 
 			
+		}else if(this->_state == Task::FINISHING){ 
+			
+		}else{
+			cout << "Status S desconhecido.  s:" << s << endl;
 			}
+		t->_state = RUNNING;
+	}
+		Task::__running = t;
+		swapcontext(&this->_context,&t->_context);		
 		
-		}
 /*	
 	if(this->_state != Task::SCHEDULER){
 		
@@ -132,9 +115,9 @@ void Task::pass_to(Task * t, State s){
 void Task::exit(int code){
 	State aux=FINISHING;
 	Task::_count--;
-//cout << "ERRO11" << endl;	
+
 	this->pass_to((Task*)__main, aux);
-//cout << "ERRO12" << endl;		
+	
 }
 
 void Task::nice(int n){
@@ -146,14 +129,12 @@ void Task::nice(int n){
 }
 
 void Task::yield(){
-	//cout << "----=====EXECUTANDO=====----" << endl;
-	//cout << "Tid da tarefa em execução>: "<< this->_tid << endl;	
+
 	
 	this->pass_to(Scheduler::self());
 }
 
 /*
-
 MENSAGENS PARA DEPURAÇÃO
   cout << "----=====EXECUTANDO=====----" << endl;
   cout << "Task::init __tid_counter: " <<__tid_counter << endl;
@@ -163,7 +144,4 @@ MENSAGENS PARA DEPURAÇÃO
   cout << "Tid da tarefa a entrar>: "<< tExec->_tid << endl; 
    
 */
-
-
-
 } /* namespace BOOOS */
