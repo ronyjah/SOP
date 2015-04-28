@@ -62,14 +62,9 @@ namespace Scheduler_Test_Functions {
 		ASSERT(t4->tid() == 5, 7);
 		ASSERT(t4->state() == Task::READY, 8);
 		ASSERT(Task::count() == 6, 9);
-		cout << "T3: " << t3 << endl;
-		//delete t1;
-		//delete t2;
-		delete t3;
-		cout << "T3-depois: " << t3 << endl;	
-		ASSERT(t3->state() == Task::READY, 8);	
+
+		delete t3;	
 		delete t4;
-		//ASSERT(t3->state() == Task::READY, 8);
 
 		Task::self()->exit(0);
 

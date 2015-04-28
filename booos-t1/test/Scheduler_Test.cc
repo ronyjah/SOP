@@ -137,21 +137,21 @@ namespace Scheduler_Test_Functions {
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");
-//cout << "----=====EXECUTANDO PANG: " << endl;
+
 		Task * pang = new Task(function, 1, (char*)"\tPang");
-		//cout << "----=====EXECUTANDO PENG: " << endl;
+
 		Task * peng = new Task(function, 1, (char*)"\t\tPeng");
-		//cout << "----=====EXECUTANDO PING: " << endl;
+
 		Task * ping = new Task(function, 1, (char*)"\t\t\tPing");
-		//cout << "----=====EXECUTANDO PONG: " << endl;
+
 		Task * pong = new Task(function, 1, (char*)"\t\t\t\tPong");
-		//cout << "----=====EXECUTANDO PUNG: " << endl;
+
 		Task * pung = new Task(function, 1, (char*)"\t\t\t\t\tPung");
 
 		while(Task::count() > 2) {
 			
 			log.push("Main yielding...\n");
-	//		cout << "----=====EXECUTANDO=====----" << endl;
+
 			Task::self()->yield();
 		
 		}

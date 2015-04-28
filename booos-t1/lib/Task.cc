@@ -14,7 +14,7 @@ namespace BOOOS
 volatile Task * Task::__running;
 int Task::__tid_counter;
 Task * Task::__main = 0 ;
-Queue Task::__ready;
+Queue Task::__ready, _waiting;
 int Task::_count;
 
 Task::Task(){
@@ -56,10 +56,18 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 	Task::__tid_counter++;
 	Task::_count++;
 	if(this->_tid != 1){
-	Task::__ready.insert(this);
+		if(SCHED_POLICY == SCHED_FCFS){	
+			Task::__ready.insert(this);
+		}else if(SCHED_POLICY == SCHED_PRIORITY){	
+			Task::__ready.insert_ordered(this);
+		}else{
+			cout << "politica nao definida" << endl;
+			
+		}	
 	}	
-	return;
 	
+	
+	return;
 }
 
 
@@ -68,16 +76,20 @@ void Task::pass_to(Task * t, State s){
 
 	//sai a main e scheduler vai ser processado. mas nao muda o estado
 	if(t->_state == Task::SCHEDULER){
-		this->_state = s;
-		if(this->_state == Task::READY){
-			Task::__ready.insert(this);
+		if(this->_state != Task::WAITING){
+			this->_state = s;
+			if(this->_state == Task::READY){
+				Task::__ready.insert(this);
 			
-		}else if(this->_state == Task::FINISHING){
-			cout << "State da tarefa main é finish" << endl;
+			}else if(this->_state == Task::FINISHING){
+				cout << "State da tarefa main é finish" << endl;
 		}	
+	
+	}
 		//scheduler deixara de ser processado. scheduler nao é incluso na lista
 	}else if(this->_state == Task::SCHEDULER){
 		t->_state = RUNNING;
+		
 	}else{
 		this->_state = s;
 		if(this->_state == Task::READY){
@@ -129,10 +141,35 @@ void Task::nice(int n){
 }
 
 void Task::yield(){
-
-	
 	this->pass_to(Scheduler::self());
 }
+
+
+
+
+void Task::wait(Task * t) {
+	_waiting.insert(t);
+	return;
+}
+
+int Task::join() {
+	if (this == 0) {
+		return -1;
+	}
+	if (this->_state != Task::FINISHING) {
+		this->wait(this);
+		this->_state = WAITING;
+		this->yield();
+		//pass_to(self(), Task::WAITING);
+	}
+	return 0;
+}
+
+
+
+
+
+
 
 /*
 MENSAGENS PARA DEPURAÇÃO

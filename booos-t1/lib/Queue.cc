@@ -44,6 +44,12 @@ void Queue::insert_ordered(Element* elem){
         elem->next(elem);
         elem->rank(this->_length);
     }else{
+	//	Element kct = this->head()->next();
+		
+		//for(
+		
+		
+		
 		i = elem->rank();
 	    this->head()->prev()->next(elem);
 
@@ -75,6 +81,7 @@ void Queue::insert(Queue::Element * elem) {
         //cout << "valor do primeiro elemento inserido: "<< elem << endl;
    //     elem->rank(this->_length);
     }else{
+		
         this->head()->prev()->next(elem);
 
         elem->prev(this->head()->prev());

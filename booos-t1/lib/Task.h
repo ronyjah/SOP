@@ -42,6 +42,8 @@ public:
 	void nice(int n);
 	static Task * self() { return (Task*) __running; }
 	static void init();
+	int join();
+	void wait(Task * t);
 	
 protected:	
 
