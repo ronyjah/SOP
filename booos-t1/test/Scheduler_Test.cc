@@ -149,12 +149,13 @@ namespace Scheduler_Test_Functions {
 		Task * pung = new Task(function, 1, (char*)"\t\t\t\t\tPung");
 
 		while(Task::count() > 2) {
-			
+			//cout << "Main End\n";
 			log.push("Main yielding...\n");
-
 			Task::self()->yield();
+			cout << "Main End\n";
 		
 		}
+
 
 		delete pang;
 		delete peng;
@@ -163,6 +164,7 @@ namespace Scheduler_Test_Functions {
 		delete pung;
 
 		log.push("Main End\n");
+		//cout << "Main End\n";
 
 		ASSERT(log.size() == correct.size(), 1);
 
@@ -172,6 +174,7 @@ namespace Scheduler_Test_Functions {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
 			ASSERT(str1 == str2, i);
+			//cout << str1 << str2;
 			i++;
 		}
 
@@ -182,6 +185,8 @@ namespace Scheduler_Test_Functions {
 int main() {
 	cout << "Welcome to BOOOS - Basic Object Oriented Operating System!" << endl;
 	cout << "This program will test the class: Scheduler" << endl;
+
+	//return Scheduler_Test_Functions::test_scheduling();
 
 	UnitTest tests("Scheduler");
 

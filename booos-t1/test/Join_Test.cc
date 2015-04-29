@@ -3,7 +3,7 @@
 #include <sstream>
 #include <BOOOS.h>
 #include <Scheduler.h>
- 
+
 #define ASSERT(x,y) if(!(x)) return y;
  
 using namespace std;
@@ -18,7 +18,7 @@ void function(void * arg) {
  
 	for(i=0; i<10; i++) {
 		cout << (char*)arg << " " << i << endl;
-	//	Timer::delay_ticks(25);
+		//Timer::delay_ticks(25);
 	}
 	cout << (char*)arg << " End" << endl;
 	Task::self()->exit(2*Task::self()->tid());

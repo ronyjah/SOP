@@ -20,16 +20,17 @@ protected:
 	Scheduler();
  
 public:
-	
-/*	
+	enum SchedulerType {
 
+		SCHED_FCFS,
+		SCHED_PRIORITY
+	};
 	
+//	static SchedulerType SCHED_POLICY;
+//	static bool SCHED_PREEMPT;
+//	static bool SCHED_AGING;
 	
-	static SchedulerType SCHED_POLICY;
-	static bool SCHED_PREEMPT;
-	static bool SCHED_AGING;
-	
-
+	/*
 		BOOOS::BOOOS::SCHED_POLICY = BOOOS::BOOOS::SCHED_FCFS;
 		BOOOS::BOOOS::SCHED_PREEMPT = false;
 		BOOOS::BOOOS::SCHED_AGING = false;

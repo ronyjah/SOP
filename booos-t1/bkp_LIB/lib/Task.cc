@@ -1,8 +1,11 @@
 #include <iostream>
+#include <sstream>
 #include "BOOOS.h"
 #include "Task.h"
+#include <stdio.h>
 #include <stdlib.h>
-#include "Scheduler.h"
+#include <ucontext.h>
+#include <Scheduler.h>
 
 using namespace std;
 namespace BOOOS
@@ -13,7 +16,6 @@ int Task::__tid_counter;
 Task * Task::__main = 0 ;
 Queue Task::__ready, _waiting;
 int Task::_count;
-
 
 Task::Task(){
 	}
@@ -43,8 +45,7 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 		 _context.uc_stack.ss_sp = _stack;
 		 _context.uc_stack.ss_size = STACK_SIZE;
 		 _context.uc_stack.ss_flags = 0;
-		 _context.uc_link = 0;
-		 //(ucontext*)
+		 _context.uc_link = (ucontext*)0;
 	}else{
 		cout << "Erro para criar uma pilha! Endereço stack" << _stack << endl;
 		//return 0;
@@ -54,22 +55,15 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 	this->_tid = Task::__tid_counter;
 	Task::__tid_counter++;
 	Task::_count++;
-	
-	cout << "SCHE_POLICY NA TASK: " << SCHED_POLICY << endl;
-	//cout << "valor de zulu " << zulu << endl;
 	if(this->_tid != 1){
-		if(1){
-			Task::__ready.insert_ordered(this);	
-			//SCHED_POLICY == SCHED_FCFS
-		//	cout << "politica FCFS" << endl;	
-			//Task::__ready.insert(this);
-		}else{//(SCHED_POLICY == SCHED_PRIORITY){
-			cout << " politica PRIO" << endl;
+		if(SCHED_POLICY == SCHED_FCFS){	
+			Task::__ready.insert(this);
+		}else if(SCHED_POLICY == SCHED_PRIORITY){	
+			Task::__ready.insert_ordered(this);
+		}else{
+			cout << "politica nao definida" << endl;
 			
-		//}else{
-		//	cout << "politica nao definida" << endl;
 		}	
-		//}	
 	}	
 	
 	
@@ -79,6 +73,38 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 
 
 void Task::pass_to(Task * t, State s){
+/*
+	//sai a main e scheduler vai ser processado. mas nao muda o estado
+	if(t->_state == Task::SCHEDULER){
+//		if(this->_state != Task::WAITING){
+			this->_state = s;
+			if(this->_state == Task::READY){
+				Task::__ready.insert(this);
+			
+			}else if(this->_state == Task::FINISHING){
+				cout << "State da tarefa main é finish" << endl;
+//		}	
+	
+	}
+		//scheduler deixara de ser processado. scheduler nao é incluso na lista
+	}else if(this->_state == Task::SCHEDULER){
+		t->_state = RUNNING;
+		
+	}else{
+		this->_state = s;
+		if(this->_state == Task::READY){
+			Task::__ready.insert(this); 
+			
+		}else if(this->_state == Task::FINISHING){ 
+			
+		}else{
+			cout << "Status S desconhecido.  s:" << s << endl;
+			}
+		t->_state = RUNNING;
+	}
+		Task::__running = t;
+		swapcontext(&this->_context,&t->_context);		
+		*/
 		
 		if(this->_state != SCHEDULER) this->_state = s;
 		if(this->_state == Task::READY){
@@ -90,14 +116,30 @@ void Task::pass_to(Task * t, State s){
 		if(t->_state != SCHEDULER) t->_state = RUNNING;
 		Task::__running = t;
 		swapcontext(&this->_context,&t->_context);		
-
+		
+/*	
+	if(this->_state != Task::SCHEDULER){
+		
+		this->_state = s;
+	 	tExec->_state = RUNNING;					//atualização da tarefa em execução	
+	}
+	if(this->_state == Task::FINISHING){
+		
+	}
+	
+	if(this->_state == Task::READY){
+		Task::__ready.insert(this);
+	}
+	
+	Task::__running = tExec; 						//atualização da tarefa em execução
+*/
 	//return;
 }
 
 void Task::exit(int code){
-	//cout << _count;
 	State aux=FINISHING;
 	Task::_count--;
+//cout << "Main End1\n";
 	this->pass_to(Scheduler::self(), aux);
 	
 }
@@ -113,6 +155,9 @@ void Task::nice(int n){
 void Task::yield(){
 	this->pass_to(Scheduler::self());
 }
+
+
+
 
 void Task::wait(Task * t) {
 	_waiting.insert(t);
@@ -131,6 +176,12 @@ int Task::join() {
 	}
 	return 0;
 }
+
+
+
+
+
+
 
 /*
 MENSAGENS PARA DEPURAÇÃO

@@ -10,7 +10,6 @@
 
 #include <Queue.h>
 #include <ucontext.h>
-//#include <BOOOS.h>
 //#include "Scheduler.h"
 
 static const int STACK_SIZE = 32768;
@@ -29,12 +28,14 @@ public:
 		FINISHING,
 		SCHEDULER
 	};
-	static int count(){return _count;} 
+	static int count(){return _count;} //definir o que deve ser retornado
 	Task(void (*entry_point)(void*), int nargs, void * arg);
 	virtual ~Task();
 	int tid_counter(){return __tid_counter;}
 	int tid() { return _tid; }
 	State state() { return _state; }
+	//Task::count() == 6, 9);
+	//ASSERT(t4->state() == Task::READY, 8);
 	void  yield(); 
 	void pass_to(Task * t, State s = READY);
 	void exit(int code);
@@ -48,6 +49,7 @@ protected:
 
 	Task();
 	State _state;
+//	static Queue * __ready;
 	static Queue __ready;
 	int _tid;
 	static int _count;

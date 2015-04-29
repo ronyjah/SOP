@@ -8,8 +8,6 @@
 #ifndef BOOOS_H_
 #define BOOOS_H_
 
-#include <Scheduler.h>
-
 namespace BOOOS {
 	enum SchedulerType {
 
@@ -18,19 +16,15 @@ namespace BOOOS {
 	};
 	static SchedulerType SCHED_POLICY;
 	static bool SCHED_PREEMPT;
-	static bool SCHED_AGING;
+	static bool SCHED_AGING;	
 	
 /* Configuration Space */
 
 class BOOOS {
 public:
-
 	BOOOS(bool verbose = true);
 	~BOOOS();
-
 	static const int BOOOS_VERSION = 0;
-	//SchedulerType sched() {return SCHED_POLICY;}
-		   
 	void panic();
 
 private:

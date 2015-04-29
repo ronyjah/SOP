@@ -2,7 +2,7 @@
 
 include ../Makedefs
 
-COMPONENTS :=   BOOOS.o Queue.o Task.o Scheduler.o
+COMPONENTS :=  Scheduler.o BOOOS.o Queue.o Task.o
 
 all: FORCE $(COMPONENTS)
 	

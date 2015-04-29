@@ -25,7 +25,7 @@ this->_head.rank(0);
 
 // Queue destructor: must finalize queue's attributes
 Queue::~Queue() {
-
+	
     
 }
 
@@ -35,28 +35,8 @@ Queue::~Queue() {
 //   02: duplicated Element (if elem already is on the queue)
 
 void Queue::insert_ordered(Element* elem){
-	int i = elem->rank();
-cout << "valor de rank" << i << endl;
-Element * e = head()->next();
-if(length() > 1){
-		do{
-		if(elem->rank() < e->rank()){
-			elem->prev(e->prev());
-			elem->next(e);
-			e->prev(elem);
-			_length++;
-			return;
-		} 
-		e = e->next();
-		}while (e != head()->prev());
-		insert(elem);
-		return;
-	}
-
-
-
-
-	/*
+	int i;
+	
 	if(this->length() == 0){
         this->head()->next(elem);
         this->head()->prev(elem);
@@ -81,12 +61,13 @@ if(length() > 1){
         i = i + 1;
         elem->rank(i);
 	}
-	*/
+	
 	}
 
 
 void Queue::insert(Queue::Element * elem) {
-       if(elem == 0){
+  
+     if(elem == 0){
 //        cerr << " error null!!!" << endl;       
         return;
     }
@@ -130,19 +111,15 @@ Queue::Element * Queue::remove() {
         this->head()->prev()->next(this->head()->next());
         this->head()->next()->prev(this->head()->prev());
    //     cout << "valor do elemento removido quando mais de um>: "<< e<< endl;	
-    
         return e;
     }else{ // apenas um elemento na fila
         e = this->head()->next();
         this->head()->next(0);
         this->head()->prev(0);
-		_length = _length - 1;    
-        return e;
-        
 	//cout << "valor do elemento removido ultimo> : "<< e<< endl;	
     }    
     
-   
+    _length = _length - 1;
 
 }
 

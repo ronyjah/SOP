@@ -166,7 +166,13 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
+
+		//BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+			cout << ""<< endl;
+		cout << "SCHED_POLICY FCFS: " << BOOOS::SCHED_POLICY << endl;
 		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		cout << "SCHED_POLICY PRIO: " << BOOOS::SCHED_POLICY << endl;
 		BOOOS::SCHED_PREEMPT = false;
 		BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
@@ -174,8 +180,9 @@ namespace Scheduler_Test_Functions {
 		log.push("Main Start\n");
 
 		Task::self()->nice(20);
-
+		cout << "----=====PANG=====----" << endl;
 		Task * pang = new Task(function, 1, (char*)"\tPang");
+		cout << "----=====PANG CRIADO=====----" << endl;
 		Task * peng = new Task(function, 1, (char*)"\t\tPeng");
 		Task * ping = new Task(function, 1, (char*)"\t\t\tPing");
 		Task * pong = new Task(function, 1, (char*)"\t\t\t\tPong");
