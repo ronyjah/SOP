@@ -18,9 +18,9 @@ using namespace BOOOS;
 namespace Scheduler_Test_Functions {
 
 	int test_init() {
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		ASSERT(Scheduler::self()->tid() == 1, 1);
@@ -44,9 +44,9 @@ namespace Scheduler_Test_Functions {
 
 	int test_creation_destruction() { // will add to Scheduler
 
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		Task t1(f1, 1, (void*)"f1"), t2(f2, 1, (void*)"f2");
@@ -63,7 +63,7 @@ namespace Scheduler_Test_Functions {
 		ASSERT(t4->state() == Task::READY, 8);
 		ASSERT(Task::count() == 6, 9);
 
-		delete t3;	
+		delete t3;
 		delete t4;
 
 		Task::self()->exit(0);
@@ -166,23 +166,16 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
-
-		//BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
-			cout << ""<< endl;
-		cout << "SCHED_POLICY FCFS: " << BOOOS::SCHED_POLICY << endl;
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		cout << "SCHED_POLICY PRIO: " << BOOOS::SCHED_POLICY << endl;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");
 
 		Task::self()->nice(20);
-		cout << "----=====PANG=====----" << endl;
+
 		Task * pang = new Task(function, 1, (char*)"\tPang");
-		cout << "----=====PANG CRIADO=====----" << endl;
 		Task * peng = new Task(function, 1, (char*)"\t\tPeng");
 		Task * ping = new Task(function, 1, (char*)"\t\t\tPing");
 		Task * pong = new Task(function, 1, (char*)"\t\t\t\tPong");
@@ -308,9 +301,9 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		BOOOS::SCHED_PREEMPT = true;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = true;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");
@@ -455,9 +448,9 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = true;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = true;
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");
@@ -601,9 +594,9 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
-		BOOOS::SCHED_PREEMPT = true;
-		BOOOS::SCHED_AGING = true;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_PRIORITY;
+		BOOOS::BOOOS::SCHED_PREEMPT = true;
+		BOOOS::BOOOS::SCHED_AGING = true;
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");

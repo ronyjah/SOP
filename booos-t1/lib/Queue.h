@@ -14,12 +14,10 @@ namespace BOOOS {
         public:
                 Queue();
                 virtual ~Queue();
-
                 class Element {
                 public:
                         Element() { _prev = 0; _next = 0; _rank = 0; }
                         virtual ~Element() {}
-
                         Element * prev() { return _prev; }
                         Element * next() { return _next; }
                         int rank() { return _rank; }
@@ -34,18 +32,14 @@ namespace BOOOS {
                 };
 
                 Element * head() { return &_head; }
-
                 int length() { return _length; }
-
                 void insert(Element * elem);
                 void insert_ordered(Element * elem);
-
                 Element * remove();
                 void remove(Element * e);
 
         private:
                 Element * search(Element * elem);
-
                 Element _head; // _head.next will point to head, _head.prev will point to tail
                 int _length;
         };

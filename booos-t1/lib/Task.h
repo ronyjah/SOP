@@ -48,7 +48,7 @@ protected:
 
 	Task();
 	State _state;
-	static Queue __ready;
+	static Queue __ready, _waiting;
 	int _tid;
 	static int _count;
 

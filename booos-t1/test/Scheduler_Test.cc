@@ -21,11 +21,10 @@ using namespace BOOOS;
 namespace Scheduler_Test_Functions {
 
 	int test_init() {
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
-
 
 		ASSERT(Scheduler::self()->tid() == 1, 1);
 		ASSERT(Scheduler::self()->state() == Task::SCHEDULER, 2);
@@ -37,7 +36,6 @@ namespace Scheduler_Test_Functions {
 		ASSERT(Task::count() == 2, 6);
 
 		Task::self()->exit(0);
-
 		return 0;
 	}
 
@@ -47,10 +45,9 @@ namespace Scheduler_Test_Functions {
 	void f4(void* a) {}
 
 	int test_creation_destruction() { // will add to Scheduler
-
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		Task t1(f1, 1, (void*)"f1"), t2(f2, 1, (void*)"f2");
@@ -69,7 +66,6 @@ namespace Scheduler_Test_Functions {
 
 		delete t3;
 		delete t4;
-
 		Task::self()->exit(0);
 
 		return 0;
@@ -87,14 +83,15 @@ namespace Scheduler_Test_Functions {
 			log.push(str.str());
 			Task::self()->yield();
 		}
+
 		std::stringstream str;
 		str << (char*)arg << " End" << endl;
 		log.push(str.str());
 		Task::self()->exit(0);
+		
 	}
 
 	int test_scheduling() {
-
 		/* Expected test output */
 		correct.push("Main Start\n");
 		correct.push("Main yielding...\n");
@@ -131,50 +128,38 @@ namespace Scheduler_Test_Functions {
 
 
 	
-		BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
-		BOOOS::SCHED_PREEMPT = false;
-		BOOOS::SCHED_AGING = false;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::BOOOS::SCHED_PREEMPT = false;
+		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
 
 		log.push("Main Start\n");
 
 		Task * pang = new Task(function, 1, (char*)"\tPang");
-
 		Task * peng = new Task(function, 1, (char*)"\t\tPeng");
-
 		Task * ping = new Task(function, 1, (char*)"\t\t\tPing");
-
 		Task * pong = new Task(function, 1, (char*)"\t\t\t\tPong");
-
 		Task * pung = new Task(function, 1, (char*)"\t\t\t\t\tPung");
 
 		while(Task::count() > 2) {
-			//cout << "Main End\n";
 			log.push("Main yielding...\n");
-			Task::self()->yield();
-			cout << "Main End\n";
-		
+			Task::self()->yield();	
 		}
-
 
 		delete pang;
 		delete peng;
 		delete ping;
 		delete pong;
 		delete pung;
-
+		
 		log.push("Main End\n");
-		//cout << "Main End\n";
-
 		ASSERT(log.size() == correct.size(), 1);
-
 		string str1,str2;
 		int i = 2;
 		while(log.size()) {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
 			ASSERT(str1 == str2, i);
-			//cout << str1 << str2;
 			i++;
 		}
 
@@ -185,8 +170,6 @@ namespace Scheduler_Test_Functions {
 int main() {
 	cout << "Welcome to BOOOS - Basic Object Oriented Operating System!" << endl;
 	cout << "This program will test the class: Scheduler" << endl;
-
-	//return Scheduler_Test_Functions::test_scheduling();
 
 	UnitTest tests("Scheduler");
 

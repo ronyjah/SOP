@@ -11,9 +11,8 @@ namespace BOOOS
 Scheduler * Scheduler::__dispatcher;
 
 Scheduler::Scheduler() : Task(dispatcher, 1,(void*)"SCHEDULER"){
-this->_state = SCHEDULER;
-this->_tid=1;
-//cout << "Endereço Scheduler" << this << endl;
+	this->_state = SCHEDULER;
+	this->_tid=1;
 }
 
 Scheduler::~Scheduler() {
@@ -27,7 +26,7 @@ void Scheduler::init() {
 		__dispatcher =  new Scheduler();
 	}
 }
-//tenho que dizer qual subclasse quer acessar o membro protected. Como vou acessar um membro protected sem dizer quem quer acessar.
+
 Task * Scheduler::choose_next(){
 		return (Task*)__ready.remove();
 }

@@ -12,6 +12,11 @@
 
 namespace BOOOS {
 
+	SchedulerType BOOOS::SCHED_POLICY;
+	bool BOOOS::SCHED_PREEMPT;
+	bool BOOOS::SCHED_AGING;
+	
+
 BOOOS::BOOOS(bool verbose) : _verbose(verbose) {
 	if(_verbose) std::cout << "Welcome to BOOOS - Basic Object Oriented Operating System!" << std::endl;
 

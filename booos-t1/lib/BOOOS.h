@@ -16,14 +16,16 @@ namespace BOOOS {
 		SCHED_FCFS,
 		SCHED_PRIORITY
 	};
-	static SchedulerType SCHED_POLICY;
-	static bool SCHED_PREEMPT;
-	static bool SCHED_AGING;
-	
+
 /* Configuration Space */
 
 class BOOOS {
 public:
+
+	static SchedulerType SCHED_POLICY;
+	static bool SCHED_PREEMPT;
+	static bool SCHED_AGING;
+	
 
 	BOOOS(bool verbose = true);
 	~BOOOS();

@@ -12,21 +12,14 @@
 #include <stdlib.h>
 using namespace std;
 namespace BOOOS {
-//                        void rank(int r) { _rank = r; }
-
-
 // Queue constructor: must initialize queue's attributes
 Queue::Queue(){
-    //this->_head->_prev = 0;
-this->_length=0;
-this->_head.rank(0);
-//this->Element::rank(0);
+	this->_length=0;
+	this->_head.rank(0);
 }
 
 // Queue destructor: must finalize queue's attributes
-Queue::~Queue() {
-
-    
+Queue::~Queue() {    
 }
 
 // insert method: must insert the Element at the end of the queue
@@ -35,91 +28,83 @@ Queue::~Queue() {
 //   02: duplicated Element (if elem already is on the queue)
 
 void Queue::insert_ordered(Element* elem){
-	int i = elem->rank();
-cout << "valor de rank" << i << endl;
-Element * e = head()->next();
-if(length() > 1){
-		do{
-		if(elem->rank() < e->rank()){
-			elem->prev(e->prev());
-			elem->next(e);
-			e->prev(elem);
-			_length++;
-			return;
-		} 
-		e = e->next();
-		}while (e != head()->prev());
-		insert(elem);
+    Queue::Element * ant;
+	Queue::Element * prox;
+
+	//caso de erro 01.
+	if (elem == 0) {
+		cerr << "01: invalid Element" << endl;
 		return;
 	}
 
-
-
-
-	/*
-	if(this->length() == 0){
-        this->head()->next(elem);
-        this->head()->prev(elem);
-        elem->prev(elem); //talvez desnecessario.
-        elem->next(elem);
-        elem->rank(this->_length);
-    }else{
-	//	Element kct = this->head()->next();
-		
-		//for(
-		
-		
-		
-		i = elem->rank();
-	    this->head()->prev()->next(elem);
-
-        elem->prev(this->head()->prev());
-        elem->next(this->head()->next());
-
-        this->head()->prev(elem);        
-        this->head()->next()->prev(elem);
-        i = i + 1;
-        elem->rank(i);
+	//quando adicionar um elemento com a lista vazia.
+	if (this->length() == 0) {
+		return insert(elem);
 	}
-	*/
+	for (ant = this->head()->next(); ant->next() != this->head()->next(); ant =
+			ant->next()) {
+		if (ant == elem) {
+			cerr << "02: duplicated Element" << endl;
+			return;
+		}
 	}
 
+	if (this->length() == 1) {
+		if (elem->rank() < this->_head.next()->rank()) {
+			elem->next(this->_head.next());
+			elem->prev(this->_head.next());
+			this->head()->next()->next(elem);
+			this->head()->next()->prev(elem);
+			this->head()->next(elem);
+			this->head()->prev(this->head()->next()->prev());
+			this->_length++;
+			return;
+		} else {
+			return insert(elem);
+		}
+	}
+	int c;
+	for (prox = this->_head.next(), c = 0; prox != this->_head.next() || c == 0;
+			prox = prox->next(), c++) {
+		if (elem->rank() < prox->rank()) {
+			if (c == 0) {
+				this->_head.next(elem);
+			}
+			elem->next(prox);
+			prox->prev()->next(elem);
+			elem->prev(prox->prev());
+			prox->prev(elem);
+			this->_length++;
+			return;
+		}
+	}
+	return insert(elem);
+}
 
 void Queue::insert(Queue::Element * elem) {
-       if(elem == 0){
-//        cerr << " error null!!!" << endl;       
+       if(elem == 0){     
         return;
     }
-    
-    //sendo o primeiro elemento da fila
     if(this->length() == 0){
         this->head()->next(elem);
         this->head()->prev(elem);
         elem->prev(elem); //talvez desnecessario.
         elem->next(elem);
-        //cout << "valor do primeiro elemento inserido: "<< elem << endl;
-   //     elem->rank(this->_length);
-    }else{
-		
-        this->head()->prev()->next(elem);
 
+    }else{		
+        this->head()->prev()->next(elem);
         elem->prev(this->head()->prev());
         elem->next(this->head()->next());
-
         this->head()->prev(elem);        
-        this->head()->next()->prev(elem);   
-       // cout << "valor do elemento inserido mais>: "<< elem << endl;	     
+        this->head()->next()->prev(elem);    
     }
     this->_length = this->_length + 1;
-    
 }
-
 // remove: must search and remove the element from the queue
 // Error messages:
 //   01: queue is empty
 Queue::Element * Queue::remove() {
     Element * e;
-    
     
     if((this->length()) == 0){
         return 0; //queue empty
@@ -129,8 +114,7 @@ Queue::Element * Queue::remove() {
         this->head()->next(this->head()->next()->next());
         this->head()->prev()->next(this->head()->next());
         this->head()->next()->prev(this->head()->prev());
-   //     cout << "valor do elemento removido quando mais de um>: "<< e<< endl;	
-    
+		_length = _length - 1;
         return e;
     }else{ // apenas um elemento na fila
         e = this->head()->next();
@@ -138,12 +122,7 @@ Queue::Element * Queue::remove() {
         this->head()->prev(0);
 		_length = _length - 1;    
         return e;
-        
-	//cout << "valor do elemento removido ultimo> : "<< e<< endl;	
     }    
-    
-   
-
 }
 
 Queue::Element * Queue::search(Element * e) {
@@ -155,8 +134,4 @@ Queue::Element * Queue::search(Element * e) {
     }while(vassoura != this->head()->prev());
 
 }
-
-
-
-
 }

@@ -11,9 +11,9 @@ namespace BOOOS
 volatile Task * Task::__running;
 int Task::__tid_counter;
 Task * Task::__main = 0 ;
-Queue Task::__ready, _waiting;
+Queue Task::__ready;
+Queue Task::_waiting;
 int Task::_count;
-
 
 Task::Task(){
 	}
@@ -21,7 +21,7 @@ Task::Task(){
 void Task::init() {
 	
 	Task::__main = new Task();
-	getcontext(&Task::__main->_context);
+	getcontext(&__main->_context);
 	Task::__running = Task::__main;
 	Task::__main->_state = RUNNING;
 	Task::_count = 0;
@@ -30,7 +30,6 @@ void Task::init() {
 	Task::__tid_counter++;
 	Task::_count++;
 }
-
 
 Task::~Task(){
 	free(this->_context.uc_stack.ss_sp);
@@ -44,7 +43,7 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 		 _context.uc_stack.ss_size = STACK_SIZE;
 		 _context.uc_stack.ss_flags = 0;
 		 _context.uc_link = 0;
-		 //(ucontext*)
+		 
 	}else{
 		cout << "Erro para criar uma pilha! Endereço stack" << _stack << endl;
 		//return 0;
@@ -54,52 +53,35 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 	this->_tid = Task::__tid_counter;
 	Task::__tid_counter++;
 	Task::_count++;
-	
-	cout << "SCHE_POLICY NA TASK: " << SCHED_POLICY << endl;
-	//cout << "valor de zulu " << zulu << endl;
+
 	if(this->_tid != 1){
-		if(1){
-			Task::__ready.insert_ordered(this);	
-			//SCHED_POLICY == SCHED_FCFS
-		//	cout << "politica FCFS" << endl;	
-			//Task::__ready.insert(this);
-		}else{//(SCHED_POLICY == SCHED_PRIORITY){
-			cout << " politica PRIO" << endl;
-			
-		//}else{
-		//	cout << "politica nao definida" << endl;
+		if(BOOOS::SCHED_POLICY == SCHED_FCFS){
+			Task::__ready.insert(this);
+		}if(BOOOS::SCHED_POLICY == SCHED_PRIORITY){
+			Task::__ready.insert_ordered(this);
 		}	
-		//}	
 	}	
-	
-	
-	//return;
 }
 
-
-
 void Task::pass_to(Task * t, State s){
-		
 		if(this->_state != SCHEDULER) this->_state = s;
 		if(this->_state == Task::READY){
-			Task::__ready.insert(this); 
-			
+			if(BOOOS::SCHED_POLICY == SCHED_FCFS){
+			Task::__ready.insert(this);
+			}if(BOOOS::SCHED_POLICY == SCHED_PRIORITY){
+				Task::__ready.insert_ordered(this);
+			}	
 		}else if(this->_state == Task::FINISHING){ 
-			//cout << "Main End2\n";
 		}
 		if(t->_state != SCHEDULER) t->_state = RUNNING;
 		Task::__running = t;
 		swapcontext(&this->_context,&t->_context);		
-
-	//return;
 }
 
 void Task::exit(int code){
-	//cout << _count;
 	State aux=FINISHING;
 	Task::_count--;
 	this->pass_to(Scheduler::self(), aux);
-	
 }
 
 void Task::nice(int n){
@@ -127,19 +109,8 @@ int Task::join() {
 		this->wait(this);
 		this->_state = WAITING;
 		this->yield();
-		//pass_to(self(), Task::WAITING);
 	}
 	return 0;
 }
 
-/*
-MENSAGENS PARA DEPURAÇÃO
-  cout << "----=====EXECUTANDO=====----" << endl;
-  cout << "Task::init __tid_counter: " <<__tid_counter << endl;
-  cout << "Task::init  _count: " <<_count << endl;
-  cout << "Task::init __tid_counter: " <<__tid_counter << endl;
-  cout << "Tid da tarefa em execução>: "<< this->_tid << endl;
-  cout << "Tid da tarefa a entrar>: "<< tExec->_tid << endl; 
-   
-*/
 } /* namespace BOOOS */
