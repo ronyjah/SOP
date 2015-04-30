@@ -12,7 +12,7 @@
 
 namespace BOOOS {
 
-	SchedulerType BOOOS::SCHED_POLICY;
+	BOOOS::SchedulerType BOOOS::SCHED_POLICY;
 	bool BOOOS::SCHED_PREEMPT;
 	bool BOOOS::SCHED_AGING;
 	

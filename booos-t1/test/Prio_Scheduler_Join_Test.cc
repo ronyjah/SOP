@@ -32,7 +32,7 @@ namespace Scheduler_Test_Functions {
 		ASSERT(Scheduler::self()->state() == Task::SCHEDULER, 5);
 		ASSERT(Task::count() == 2, 6);
 
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 
 		return 0;
 	}
@@ -66,7 +66,7 @@ namespace Scheduler_Test_Functions {
 		delete t3;
 		delete t4;
 
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 
 		return 0;
 	}
@@ -96,14 +96,13 @@ namespace Scheduler_Test_Functions {
 			str << (char*)arg << " End" << endl;
 			log.push(str.str());
 		}
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 	}
 
 	int test_scheduling() {
 
 		/* Expected test output */
 		correct.push("Main Start\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang Start\n");
 		correct.push("\tPang 0\n");
 		correct.push("\t\tPeng Start\n");
@@ -181,24 +180,23 @@ namespace Scheduler_Test_Functions {
 		Task * pong = new Task(function, 1, (char*)"\t\t\t\tPong");
 		Task * pung = new Task(function, 1, (char*)"\t\t\t\t\tPung");
 
-		while(Task::count() > 2) {
-			Task::self()->nice(20);
-			log.push("Main yielding...\n");
-			Task::self()->yield();
-		}
-
+		ASSERT(pang->join() == pang->tid(), 1);
 		delete pang;
+		ASSERT(peng->join() == peng->tid(), 2);
 		delete peng;
+		ASSERT(ping->join() == ping->tid(), 3);
 		delete ping;
+		ASSERT(pong->join() == pong->tid(), 4);
 		delete pong;
+		ASSERT(pung->join() == pung->tid(), 5);
 		delete pung;
 
 		log.push("Main End\n");
 
-		ASSERT(log.size() == correct.size(), 1);
+		ASSERT(log.size() == correct.size(), 6);
 
 		string str1,str2;
-		int i = 2;
+		int i = 7;
 		while(log.size()) {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
@@ -232,7 +230,7 @@ namespace Scheduler_Test_Functions {
 			log.push(str.str());
 		}
 
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 	}
 
 	int test_preempt_scheduling() {
@@ -318,24 +316,23 @@ namespace Scheduler_Test_Functions {
 
 
 
-		while(Task::count() > 2) {
-			Task::self()->nice(20);
-			log.push("Main yielding...\n");
-			Task::self()->yield();
-		}
-
+		ASSERT(pang->join() == pang->tid(), 1);
 		delete pang;
+		ASSERT(peng->join() == peng->tid(), 2);
 		delete peng;
+		ASSERT(ping->join() == ping->tid(), 3);
 		delete ping;
+		ASSERT(pong->join() == pong->tid(), 4);
 		delete pong;
+		ASSERT(pung->join() == pung->tid(), 5);
 		delete pung;
 
 		log.push("Main End\n");
 
-		ASSERT(log.size() == correct.size(), 1);
+		ASSERT(log.size() == correct.size(), 6);
 
 		string str1,str2;
-		int i = 2;
+		int i = 7;
 		while(log.size()) {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
@@ -367,15 +364,13 @@ namespace Scheduler_Test_Functions {
 			str << (char*)arg << " End" << endl;
 			log.push(str.str());
 		}
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 	}
 
 	int test_aging_scheduling() {
 
 		/* Expected test output */
 		correct.push("Main Start\n");
-		correct.push("Main yielding...\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang Start\n");
 		correct.push("\tPang 0\n");
 		correct.push("\t\tPeng Start\n");
@@ -386,61 +381,51 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\tPong 0\n");
 		correct.push("\t\t\t\t\tPung Start\n");
 		correct.push("\t\t\t\t\tPung 0\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 1\n");
 		correct.push("\t\tPeng 1\n");
 		correct.push("\t\t\tPing 1\n");
 		correct.push("\t\t\t\tPong 1\n");
 		correct.push("\t\t\t\t\tPung 1\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 2\n");
 		correct.push("\t\tPeng 2\n");
 		correct.push("\t\t\tPing 2\n");
 		correct.push("\t\t\t\tPong 2\n");
 		correct.push("\t\t\t\t\tPung 2\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 3\n");
 		correct.push("\t\tPeng 3\n");
 		correct.push("\t\t\tPing 3\n");
 		correct.push("\t\t\t\tPong 3\n");
 		correct.push("\t\t\t\t\tPung 3\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 4\n");
 		correct.push("\t\tPeng 4\n");
 		correct.push("\t\t\tPing 4\n");
 		correct.push("\t\t\t\tPong 4\n");
 		correct.push("\t\t\t\t\tPung 4\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 5\n");
 		correct.push("\t\tPeng 5\n");
 		correct.push("\t\t\tPing 5\n");
 		correct.push("\t\t\t\tPong 5\n");
 		correct.push("\t\t\t\t\tPung 5\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 6\n");
 		correct.push("\t\tPeng 6\n");
 		correct.push("\t\t\tPing 6\n");
 		correct.push("\t\t\t\tPong 6\n");
 		correct.push("\t\t\t\t\tPung 6\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 7\n");
 		correct.push("\t\tPeng 7\n");
 		correct.push("\t\t\tPing 7\n");
 		correct.push("\t\t\t\tPong 7\n");
 		correct.push("\t\t\t\t\tPung 7\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 8\n");
 		correct.push("\t\tPeng 8\n");
 		correct.push("\t\t\tPing 8\n");
 		correct.push("\t\t\t\tPong 8\n");
 		correct.push("\t\t\t\t\tPung 8\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 9\n");
 		correct.push("\t\tPeng 9\n");
 		correct.push("\t\t\tPing 9\n");
 		correct.push("\t\t\t\tPong 9\n");
 		correct.push("\t\t\t\t\tPung 9\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang End\n");
 		correct.push("\t\tPeng End\n");
 		correct.push("\t\t\tPing End\n");
@@ -465,23 +450,23 @@ namespace Scheduler_Test_Functions {
 
 
 
-		while(Task::count() > 2) {
-			log.push("Main yielding...\n");
-			Task::self()->yield();
-		}
-
+		ASSERT(pang->join() == pang->tid(), 1);
 		delete pang;
+		ASSERT(peng->join() == peng->tid(), 2);
 		delete peng;
+		ASSERT(ping->join() == ping->tid(), 3);
 		delete ping;
+		ASSERT(pong->join() == pong->tid(), 4);
 		delete pong;
+		ASSERT(pung->join() == pung->tid(), 5);
 		delete pung;
 
 		log.push("Main End\n");
 
-		ASSERT(log.size() == correct.size(), 1);
+		ASSERT(log.size() == correct.size(), 6);
 
 		string str1,str2;
-		int i = 2;
+		int i = 7;
 		while(log.size()) {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
@@ -514,7 +499,7 @@ namespace Scheduler_Test_Functions {
 			log.push(str.str());
 		}
 
-		Task::self()->exit(0);
+		Task::self()->exit(Task::self()->tid());
 	}
 
 	int test_preempt_aging_scheduling() {
@@ -523,7 +508,6 @@ namespace Scheduler_Test_Functions {
 		correct.push("Main Start\n");
 		correct.push("\tPang Start\n");
 		correct.push("\tPang 0\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 1\n");
 		correct.push("\t\tPeng Start\n");
 		correct.push("\t\tPeng 0\n");
@@ -533,61 +517,51 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\tPong 0\n");
 		correct.push("\t\t\t\t\tPung Start\n");
 		correct.push("\t\t\t\t\tPung 0\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 2\n");
 		correct.push("\t\tPeng 1\n");
 		correct.push("\t\t\tPing 1\n");
 		correct.push("\t\t\t\tPong 1\n");
 		correct.push("\t\t\t\t\tPung 1\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 3\n");
 		correct.push("\t\tPeng 2\n");
 		correct.push("\t\t\tPing 2\n");
 		correct.push("\t\t\t\tPong 2\n");
 		correct.push("\t\t\t\t\tPung 2\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 4\n");
 		correct.push("\t\tPeng 3\n");
 		correct.push("\t\t\tPing 3\n");
 		correct.push("\t\t\t\tPong 3\n");
 		correct.push("\t\t\t\t\tPung 3\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 5\n");
 		correct.push("\t\tPeng 4\n");
 		correct.push("\t\t\tPing 4\n");
 		correct.push("\t\t\t\tPong 4\n");
 		correct.push("\t\t\t\t\tPung 4\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 6\n");
 		correct.push("\t\tPeng 5\n");
 		correct.push("\t\t\tPing 5\n");
 		correct.push("\t\t\t\tPong 5\n");
 		correct.push("\t\t\t\t\tPung 5\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 7\n");
 		correct.push("\t\tPeng 6\n");
 		correct.push("\t\t\tPing 6\n");
 		correct.push("\t\t\t\tPong 6\n");
 		correct.push("\t\t\t\t\tPung 6\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 8\n");
 		correct.push("\t\tPeng 7\n");
 		correct.push("\t\t\tPing 7\n");
 		correct.push("\t\t\t\tPong 7\n");
 		correct.push("\t\t\t\t\tPung 7\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang 9\n");
 		correct.push("\t\tPeng 8\n");
 		correct.push("\t\t\tPing 8\n");
 		correct.push("\t\t\t\tPong 8\n");
 		correct.push("\t\t\t\t\tPung 8\n");
-		correct.push("Main yielding...\n");
 		correct.push("\tPang End\n");
 		correct.push("\t\tPeng 9\n");
 		correct.push("\t\t\tPing 9\n");
 		correct.push("\t\t\t\tPong 9\n");
 		correct.push("\t\t\t\t\tPung 9\n");
-		correct.push("Main yielding...\n");
 		correct.push("\t\tPeng End\n");
 		correct.push("\t\t\tPing End\n");
 		correct.push("\t\t\t\tPong End\n");
@@ -611,23 +585,23 @@ namespace Scheduler_Test_Functions {
 
 
 
-		while(Task::count() > 2) {
-			log.push("Main yielding...\n");
-			Task::self()->yield();
-		}
-
+		ASSERT(pang->join() == pang->tid(), 1);
 		delete pang;
+		ASSERT(peng->join() == peng->tid(), 2);
 		delete peng;
+		ASSERT(ping->join() == ping->tid(), 3);
 		delete ping;
+		ASSERT(pong->join() == pong->tid(), 4);
 		delete pong;
+		ASSERT(pung->join() == pung->tid(), 5);
 		delete pung;
 
 		log.push("Main End\n");
 
-		ASSERT(log.size() == correct.size(), 1);
+		ASSERT(log.size() == correct.size(), 6);
 
 		string str1,str2;
-		int i = 2;
+		int i = 7;
 		while(log.size()) {
 			str1 = log.front(); log.pop();
 			str2 = correct.front(); correct.pop();
@@ -641,9 +615,13 @@ namespace Scheduler_Test_Functions {
 
 int main() {
 	cout << "Welcome to BOOOS - Basic Object Oriented Operating System!" << endl;
-	cout << "This program will test the class: Scheduler configured with Priority Policy" << endl;
+	cout << "This program will test the class: Scheduler configured with Priority Policy using Join" << endl;
 
-	UnitTest tests("Prio_Scheduler");
+	// For debugging, call the function directly and comment the unit testing block above.
+//	cout << Scheduler_Test_Functions::test_preempt_scheduling() << endl;
+//	return 0;
+
+	UnitTest tests("Prio_Scheduler_Join");
 
 	tests.attach_test(&Scheduler_Test_Functions::test_init, "Init");
 	tests.attach_test(&Scheduler_Test_Functions::test_creation_destruction, "Creation and Destruction");
@@ -653,9 +631,6 @@ int main() {
 	tests.attach_test(&Scheduler_Test_Functions::test_preempt_aging_scheduling, "Priority with Preemption and Aging");
 
 	tests.run();
-
-	// For debugging, call the function directly and comment the unit testing block above.
-//	Scheduler_Test_Functions::test_scheduling();
 
 	return 0;
 }

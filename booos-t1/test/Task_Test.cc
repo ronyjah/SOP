@@ -42,13 +42,13 @@ namespace Task_Test_Functions {
 		Task * t3 = new Task(f3, 1, (void*)"f3");
 		Task * t4 = new Task(f4, 1, (void*)"f4");
 
-		ASSERT(t1.tid() == 2, 1);
+		ASSERT(t1.tid() == 1, 1);
 		ASSERT(t1.state() == Task::READY, 2);
-		ASSERT(t2.tid() == 3, 3);
+		ASSERT(t2.tid() == 2, 3);
 		ASSERT(t2.state() == Task::READY, 4);
-		ASSERT(t3->tid() == 4, 5);
+		ASSERT(t3->tid() == 3, 5);
 		ASSERT(t3->state() == Task::READY, 6);
-		ASSERT(t4->tid() == 5, 7);
+		ASSERT(t4->tid() == 4, 7);
 		ASSERT(t4->state() == Task::READY, 8);
 
 		delete t3;
@@ -127,11 +127,12 @@ namespace Task_Test_Functions {
 
 		log.push("Main Start\n");
 
-
 		ping = new Task(f_ping, 1, (char*)"\tPing");
 		pong = new Task(f_pong, 1, (char*)"\tPong");
+
 		Task::self()->pass_to(ping);
 		Task::self()->pass_to(pong);
+
 		log.push("Main End\n");
 
 		ASSERT(log.size() == correct.size(), 1);
@@ -143,11 +144,9 @@ namespace Task_Test_Functions {
 			str2 = correct.front(); correct.pop();
 			ASSERT(str1 == str2, i);
 			i++;
-
 		}
 
 		delete ping;
-
 		delete pong;
 
 		return 0;

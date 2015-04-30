@@ -16,19 +16,19 @@ Queue Task::_waiting;
 int Task::_count;
 
 Task::Task(){
+	getcontext(&this->_context);
+	this->_state = RUNNING;
+	this->_tid = __tid_counter++;
+	Task::_count++;
+
 	}
 
 void Task::init() {
 	
-	Task::__main = new Task();
-	getcontext(&__main->_context);
-	Task::__running = Task::__main;
-	Task::__main->_state = RUNNING;
-	Task::_count = 0;
 	Task::__tid_counter  = 0;
-	Task::__main->_tid = __tid_counter;
-	Task::__tid_counter++;
-	Task::_count++;
+	Task::_count = 0;
+	Task::__main = new Task();
+	Task::__running = Task::__main;
 }
 
 Task::~Task(){
@@ -42,7 +42,7 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 		 _context.uc_stack.ss_sp = _stack;
 		 _context.uc_stack.ss_size = STACK_SIZE;
 		 _context.uc_stack.ss_flags = 0;
-		 _context.uc_link = 0;
+		 _context.uc_link = &__main->_context;
 		 
 	}else{
 		cout << "Erro para criar uma pilha! Endereço stack" << _stack << endl;
@@ -55,20 +55,28 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 	Task::_count++;
 
 	if(this->_tid != 1){
-		if(BOOOS::SCHED_POLICY == SCHED_FCFS){
+		if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){
 			Task::__ready.insert(this);
-		}if(BOOOS::SCHED_POLICY == SCHED_PRIORITY){
+		}if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){
 			Task::__ready.insert_ordered(this);
 		}	
 	}	
 }
 
+void Task::insert_in_ready(Task *t) {
+                        if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){                                     
+                        Task::__ready.insert(this);                                                       
+                        }if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){                                
+                                Task::__ready.insert_ordered(this);                                       
+                        }                                                                                
+}
+
 void Task::pass_to(Task * t, State s){
 		if(this->_state != SCHEDULER) this->_state = s;
 		if(this->_state == Task::READY){
-			if(BOOOS::SCHED_POLICY == SCHED_FCFS){
+			if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){
 			Task::__ready.insert(this);
-			}if(BOOOS::SCHED_POLICY == SCHED_PRIORITY){
+			}if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){
 				Task::__ready.insert_ordered(this);
 			}	
 		}else if(this->_state == Task::FINISHING){ 
@@ -79,9 +87,12 @@ void Task::pass_to(Task * t, State s){
 }
 
 void Task::exit(int code){
-	State aux=FINISHING;
 	Task::_count--;
-	this->pass_to(Scheduler::self(), aux);
+	this->_exit_code = code;
+	while(_waiting.length()) {
+		insert_in_ready((Task*)_waiting.remove());
+	}
+	this->pass_to(Scheduler::self(), FINISHING);
 }
 
 void Task::nice(int n){
@@ -102,15 +113,11 @@ void Task::wait(Task * t) {
 }
 
 int Task::join() {
-	if (this == 0) {
-		return -1;
-	}
 	if (this->_state != Task::FINISHING) {
-		this->wait(this);
-		this->_state = WAITING;
-		this->yield();
+		this->wait(self());
+		this->pass_to(Scheduler::self(), WAITING);
 	}
-	return 0;
+	return this->_exit_code;
 }
 
 } /* namespace BOOOS */

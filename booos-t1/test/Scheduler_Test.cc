@@ -10,10 +10,7 @@
 #include <queue>
 #include <BOOOS.h>
 #include <Scheduler.h>
-#include <Task.h>
-
 #include "test_scaffold.h"
-
 
 using namespace std;
 using namespace BOOOS;
@@ -21,7 +18,7 @@ using namespace BOOOS;
 namespace Scheduler_Test_Functions {
 
 	int test_init() {
-		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::BOOOS::SCHED_FCFS;
 		BOOOS::BOOOS::SCHED_PREEMPT = false;
 		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
@@ -36,6 +33,7 @@ namespace Scheduler_Test_Functions {
 		ASSERT(Task::count() == 2, 6);
 
 		Task::self()->exit(0);
+
 		return 0;
 	}
 
@@ -45,7 +43,8 @@ namespace Scheduler_Test_Functions {
 	void f4(void* a) {}
 
 	int test_creation_destruction() { // will add to Scheduler
-		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::BOOOS::SCHED_FCFS;
 		BOOOS::BOOOS::SCHED_PREEMPT = false;
 		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
@@ -66,6 +65,7 @@ namespace Scheduler_Test_Functions {
 
 		delete t3;
 		delete t4;
+
 		Task::self()->exit(0);
 
 		return 0;
@@ -83,15 +83,14 @@ namespace Scheduler_Test_Functions {
 			log.push(str.str());
 			Task::self()->yield();
 		}
-
 		std::stringstream str;
 		str << (char*)arg << " End" << endl;
 		log.push(str.str());
 		Task::self()->exit(0);
-		
 	}
 
 	int test_scheduling() {
+
 		/* Expected test output */
 		correct.push("Main Start\n");
 		correct.push("Main yielding...\n");
@@ -126,9 +125,7 @@ namespace Scheduler_Test_Functions {
 		correct.push("\t\t\t\t\tPung End\n");
 		correct.push("Main End\n");
 
-
-	
-		BOOOS::BOOOS::SCHED_POLICY = BOOOS::SCHED_FCFS;
+		BOOOS::BOOOS::SCHED_POLICY = BOOOS::BOOOS::SCHED_FCFS;
 		BOOOS::BOOOS::SCHED_PREEMPT = false;
 		BOOOS::BOOOS::SCHED_AGING = false;
 		BOOOS::BOOOS booos(false);
@@ -143,7 +140,7 @@ namespace Scheduler_Test_Functions {
 
 		while(Task::count() > 2) {
 			log.push("Main yielding...\n");
-			Task::self()->yield();	
+			Task::self()->yield();
 		}
 
 		delete pang;
@@ -151,9 +148,11 @@ namespace Scheduler_Test_Functions {
 		delete ping;
 		delete pong;
 		delete pung;
-		
+
 		log.push("Main End\n");
+
 		ASSERT(log.size() == correct.size(), 1);
+
 		string str1,str2;
 		int i = 2;
 		while(log.size()) {

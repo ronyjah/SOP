@@ -11,16 +11,16 @@
 #include <Scheduler.h>
 
 namespace BOOOS {
+
+class BOOOS {
+public:
+
+/* Configuration Space */
 	enum SchedulerType {
 
 		SCHED_FCFS,
 		SCHED_PRIORITY
 	};
-
-/* Configuration Space */
-
-class BOOOS {
-public:
 
 	static SchedulerType SCHED_POLICY;
 	static bool SCHED_PREEMPT;

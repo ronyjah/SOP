@@ -47,18 +47,20 @@ public:
 protected:	
 
 	Task();
+	void insert_in_ready(Task*);
 	State _state;
 	static Queue __ready, _waiting;
 	int _tid;
 	static int _count;
+	ucontext_t _context;
+	static Task * __main;
 
 private:
 
-	ucontext_t _context, uct_main;
 	char * _stack;
+	int _exit_code;
 	static int __tid_counter;
 	static volatile Task * __running;
-	static Task * __main;
 
 /*
 

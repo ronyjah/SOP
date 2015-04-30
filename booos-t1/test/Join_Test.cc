@@ -25,9 +25,9 @@ void function(void * arg) {
 }
  
 int main() {
-	BOOOS::SCHED_POLICY == SCHED_FCFS;
-	BOOOS::SCHED_PREEMPT = true;
-	BOOOS::SCHED_AGING = true;
+	BOOOS::BOOOS::SCHED_POLICY == BOOOS::BOOOS::SCHED_FCFS;
+	BOOOS::BOOOS::SCHED_PREEMPT = true;
+	BOOOS::BOOOS::SCHED_AGING = true;
 	BOOOS::BOOOS booos(false);
  
 	cout << "Main Start" << endl;
@@ -66,8 +66,8 @@ int main() {
 	cout << "Result: " << result << endl;
  
  
-	cout << "Main End" << endl;
 	Task::self()->exit(0);
+	cout << "Main End" << endl;
  
 	return 0;
 }
