@@ -45,14 +45,15 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 		 _context.uc_link = &__main->_context;
 		 
 	}else{
-		cout << "Erro para criar uma pilha! Endereço stack" << _stack << endl;
+		cerr << "Erro para criar uma pilha! Endereço stack" << _stack << endl;
 		//return 0;
 	}
+	
 	makecontext(&_context, (void (*)())entry_point, nargs, arg);
+	
+	//alteração dos atributos da tarefa criada.
 	this->_state = Task::READY;
 	this->_tid = Task::__tid_counter;
-	Task::__tid_counter++;
-	Task::_count++;
 
 	if(this->_tid != 1){
 		if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){
@@ -60,28 +61,37 @@ Task::Task(void (*entry_point)(void*), int nargs, void * arg){
 		}if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){
 			Task::__ready.insert_ordered(this);
 		}	
-	}	
+	}
+	//alteração das variaveis globais.
+	Task::__tid_counter++;
+	Task::_count++;	
 }
 
 void Task::insert_in_ready(Task *t) {
-                        if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){                                     
-                        Task::__ready.insert(this);                                                       
-                        }if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){                                
-                                Task::__ready.insert_ordered(this);                                       
-                        }                                                                                
+	if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){                                     
+		Task::__ready.insert(this);                                                       
+    }if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){                                
+		Task::__ready.insert_ordered(this);                                       
+    }                                                                                
 }
 
 void Task::pass_to(Task * t, State s){
+		
+		//tarefa corrente diferente de scheduler. Ex: __main
 		if(this->_state != SCHEDULER) this->_state = s;
+		
 		if(this->_state == Task::READY){
 			if(BOOOS::SCHED_POLICY == BOOOS::SCHED_FCFS){
-			Task::__ready.insert(this);
+				Task::__ready.insert(this);
 			}if(BOOOS::SCHED_POLICY == BOOOS::SCHED_PRIORITY){
 				Task::__ready.insert_ordered(this);
 			}	
-		}else if(this->_state == Task::FINISHING){ 
 		}
+		
+		//nova tarefa muda o estado se nao for dispatcher
 		if(t->_state != SCHEDULER) t->_state = RUNNING;
+		
+		//atualização da running com a nova tarefa.
 		Task::__running = t;
 		swapcontext(&this->_context,&t->_context);		
 }
@@ -97,7 +107,7 @@ void Task::exit(int code){
 
 void Task::nice(int n){
 	if(n > -21 and n < 21){
-		rank(n);
+		this->rank(n);
 	}else{
 		cerr << "Erro. Prioridade: "<< n << endl;	
 	}

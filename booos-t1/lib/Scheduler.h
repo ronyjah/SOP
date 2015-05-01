@@ -22,17 +22,13 @@ protected:
 public:
 	 
 	virtual ~Scheduler();
- 
-	static void init();
- 
-	static void dispatcher(void*);
- 
-	static Scheduler * self() { return __dispatcher; }
+ 	static void init();
+ 	static void dispatcher(void*);
+ 	static Scheduler * self() { return __dispatcher; }
  
 protected:
 	virtual Task * choose_next();
- 
-	static Scheduler * __dispatcher;
+ 	static Scheduler * __dispatcher;
 };
  
 } /* namespace BOOOS */
